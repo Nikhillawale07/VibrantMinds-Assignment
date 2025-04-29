@@ -1,0 +1,85 @@
+use college;
+SELECT * FROM student;
+
+DELIMITER $$
+CREATE TRIGGER before_insert_javamarks
+before insert on student
+for each row 
+BEGIN
+IF new.java1 < 0 then
+SIGNAL sqlstate '43000'
+SET MESSAGE_TEXT = "Invalid Marks";
+END IF;
+END $$
+
+DELIMITER ;
+
+-----------------------------------------------------------------------------------------------------
+use college;
+SELECT * FROM student;
+show tables;
+drop trigger before_insert_javamarks;
+show triggers;
+alter table student add column city varchar(100);
+update student set city="solapur" where roll_no=4;
+
+DELIMITER $$
+CREATE TRIGGER before_insert_city
+before insert  on student
+for each row
+BEGIN
+IF NEW.city IS NULL THEN
+set NEW.city="UNKNOWN";
+
+END IF;
+END$$
+
+DELIMITER ; 
+
+insert into student(roll_no,name,java1,sql1,fees,batch)values(8,"XYZ",97,54,40000,"JAP73");
+-------------------------------------------------------------------------------------------------------
+use college;
+SELECT * FROM student2;
+show tables;
+drop trigger before_insert_javamarks;
+show triggers;
+alter table student add column city varchar(100);
+update student set city="solapur" where roll_no=4;
+
+DELIMITER $$
+CREATE TRIGGER after_insert_fees
+after insert  on student2
+for each row
+BEGIN
+INSERT INTO student_marks(roll_no,name,java1,sql1,fees)values(NEW.roll_no,NEW.name,
+NEW.java1,NEW.sql1,NEW.fees);
+
+END$$
+
+DELIMITER ; 
+
+create table student_marks AS select * from student;
+
+select *from student_marks;
+
+show triggers;
+drop trigger after_insert_fees;
+
+INSERT INTO student2(roll_no,name,java1,sql1,fees)values(8,"amar",76,37,50000);
+
+---------------------------------------------------------------------------------------------------------------
+use college;
+select * from student;
+DELIMITER $$
+CREATE TRIGGER before_delete
+BEFORE DELETE ON student
+FOR EACH ROW
+BEGIN
+SIGNAL sqlstate '45000'
+SET MESSAGE_TEXT = "NOT AUTHORISED";
+
+END$$
+
+DELIMITER ;
+
+delete from student where roll_no=1;
