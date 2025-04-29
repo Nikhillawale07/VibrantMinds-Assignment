@@ -1,2 +1,2 @@
-# VibrantMinds-Assignment
-VibrantMinds Assignment
+# VibrantMinds-Assignment-1
+VibrantMinds Assignment-1
